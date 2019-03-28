@@ -24,6 +24,10 @@ source_group("Header Files" FILES ${h_files})
 
 # Find dependencies
 find_package(CUDA 6.0 REQUIRED)
+
+SET(GLUT_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/common/GL")
+SET(GLUT_glut_LIBRARY_DEBUG "${PROJECT_SOURCE_DIR}/lib/glut64.lib")
+SET(GLUT_glut_LIBRARY_RELEASE "${PROJECT_SOURCE_DIR}/lib/glut64.lib")
 find_package(GLUT)
 
 # Compiler options
@@ -33,9 +37,8 @@ set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS}
     -res-usage)
 
 # set cuda compatible arquitectures (code generation) sm_20 Fermi, GTX 480 compatible
-list(APPEND CUDA_NVCC_FLAGS "-gencode=arch=compute_20,code=sm_20")
-
-#list(APPEND CUDA_NVCC_FLAGS "-gencode=arch=compute_61,code=sm_61")   #later architectures
+#list(APPEND CUDA_NVCC_FLAGS "-gencode=arch=compute_20,code=sm_20")
+list(APPEND CUDA_NVCC_FLAGS "-gencode=arch=compute_61,code=sm_61")   #later architectures
 
 set(CUDA_NVCC_FLAGS_DEBUG ${CUDA_NVCC_FLAGS} -g -G)
 set(CUDA_NVCC_FLAGS_RELEASE ${CUDA_NVCC_FLAGS} -O3)
