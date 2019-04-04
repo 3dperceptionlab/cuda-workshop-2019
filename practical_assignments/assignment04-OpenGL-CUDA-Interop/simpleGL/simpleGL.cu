@@ -16,7 +16,7 @@
 		utilizando un kernel CUDA.
 
     Pasos:
-    1. Crear un VBO vacio
+    1. Crear un VBO vació
     2. Registrar el VBO en CUDA
     3. Mapear el VBO para escribir desde CUDA
     4. Ejecutar kernel CUDA para modificar la posición de los vértices
@@ -40,7 +40,7 @@
 // OpenGL Graphics includes
 #include "glew.h"
 #if defined (__APPLE__) || defined(MACOSX)
-#include "common/inc/GL/glut.h"
+#include "glut.h"
 #else
 #include "freeglut.h"
 #endif
@@ -50,12 +50,12 @@
 #include <cuda_gl_interop.h>
 
 // Utilities and timing functions
-#include "helper_functions.h" // incluye cuda.h y cuda_runtime_api.h
-#include "timer.h" // Funciones medidas de tiempo
+#include "helper_functions.h"    // incluye cuda.h y cuda_runtime_api.h
+#include "timer.h"               // Funciones medidas de tiempo
 
-// CUDA helper functions      
-#include "helper_cuda.h" // funciones CUDA para comprobar errores
-#include "helper_cuda_gl.h" // funciones CUDA/GL interoperabilidad
+// CUDA helper functions
+#include "helper_cuda.h"         // funciones CUDA para comprobar errores
+#include "helper_cuda_gl.h"      // funciones CUDA/GL interoperabilidad
 
 #include <vector_types.h>
 
@@ -282,16 +282,16 @@ void computeFPS()
 ////////////////////////////////////////////////////////////////////////////////
 bool initGL(int *argc, char **argv)
 {
-    glutInit(argc, argv); //we initialize the GLUT library
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE); //set the initial display mode
-    glutInitWindowSize(window_width, window_height); //window size
-    glutCreateWindow("Cuda GL Interop (VBO)"); //creating a top-level window
-    glutDisplayFunc(display); //setting the display callback for the current window
-    glutKeyboardFunc(keyboard); //setting the keyboard callback for the current window
-    glutMotionFunc(motion); //setting the motion callback for the current window
-    glutTimerFunc(REFRESH_DELAY, timerEvent,0); //registers a timer callback to be triggered in a specified number of milliseconds.
+    glutInit(argc, argv);
+    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+    glutInitWindowSize(window_width, window_height);
+    glutCreateWindow("Cuda GL Interop (VBO)");
+    glutDisplayFunc(display);
+    glutKeyboardFunc(keyboard);
+    glutMotionFunc(motion);
+    glutTimerFunc(REFRESH_DELAY, timerEvent,0);
 
-    glewInit(); //initialize opengl extenions
+    glewInit();
 
     if (! glewIsSupported("GL_VERSION_2_0 "))
     {
@@ -301,16 +301,16 @@ bool initGL(int *argc, char **argv)
     }
 
     // inicialización por defecto
-    glClearColor(0.0, 0.0, 0.0, 1.0); //specify clear values for the color buffers
-    glDisable(GL_DEPTH_TEST); //disable depth buffer
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glDisable(GL_DEPTH_TEST);
 
-    // setting the viewport
+    // viewport
     glViewport(0, 0, window_width, window_height);
 
     // projection
-    glMatrixMode(GL_PROJECTION); //applies subsequent matrix operations to the projection matrix stack
-    glLoadIdentity(); //replace the current matrix with the identity matrix
-    gluPerspective(60.0, (GLfloat)window_width / (GLfloat) window_height, 0.1, 10.0); //set up a perspective projection matrix (fovy, aspect ratio, zNear, zFar)
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(60.0, (GLfloat)window_width / (GLfloat) window_height, 0.1, 10.0);
 
     SDK_CHECK_ERROR_GL();
 
@@ -377,7 +377,7 @@ bool runTest(int argc, char **argv, char *ref_file)
         runCuda(&cuda_vbo_resource);
 
         // Mostramos por pantalla el resultado
-        glutMainLoop(); //this calls the display callback over and over https://stackoverflow.com/questions/1862496/opengl-glutmainloop
+        glutMainLoop();
         atexit(cleanup);
     }
 
@@ -398,7 +398,7 @@ void runCuda(struct cudaGraphicsResource **vbo_resource)
     checkCudaErrors( cudaGraphicsResourceGetMappedPointer((void **)&dptr, &num_bytes,
                                                          *vbo_resource));
 
-		// invocamos función que se encarga de lanzar el kernel de cálculo
+		// invocamos función encarga de lanzar el kernel de cálculo
     launch_kernel(dptr, mesh_width, mesh_height, g_fAnim);
 		//launch_kernel_perlin(dptr, mesh_width, mesh_height, g_fAnim);
 
@@ -521,7 +521,7 @@ void display()
     glDrawArrays(GL_POINTS, 0, mesh_width * mesh_height);
 		glDisableClientState(GL_VERTEX_ARRAY);
 
-    glutSwapBuffers(); //swaps the buffers of the current window if double buffered
+    glutSwapBuffers();
 
     g_fAnim += 0.01f;
 
