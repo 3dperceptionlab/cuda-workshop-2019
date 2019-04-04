@@ -1,0 +1,64 @@
+############################################################################
+# <project> simpleGL			</summary>
+# <summary> simpleGL CUDA	 		</summary>
+# <date>    2018-05-10          	</date>
+# <author>  Sergio Orts-Escolano 	</author>
+# <email>   sorts@ua.es 			</email>
+############################################################################
+
+cmake_minimum_required(VERSION 2.8)
+
+if(COMMAND cmake_policy)
+    cmake_policy(SET CMP0015 NEW)
+endif(COMMAND cmake_policy)
+
+SET( PROJECT_NAME simple_gl_cuda )
+project(${PROJECT_NAME})
+
+file(GLOB cpp_files *.cpp)
+file(GLOB h_files common/GL/*.h)
+file(GLOB cu_files *.cu)
+
+source_group("Source Files" FILES ${cu_files} ${cpp_files})
+source_group("Header Files" FILES ${h_files})
+
+# set stuff for windows
+
+# Find dependencies
+find_package(CUDA 6.0 REQUIRED)
+
+# Compiler options
+set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS}
+	-use_fast_math
+	-res-usage)
+
+# Include and link directories
+include_directories(
+	common/GL/
+	common/
+)
+	
+# set cuda compatible arquitectures (code generation) sm_20 Fermi, GTX 480 compatible
+#list(APPEND CUDA_NVCC_FLAGS "-gencode=arch=compute_20,code=sm_20")
+
+list(APPEND CUDA_NVCC_FLAGS "-gencode=arch=compute_61,code=sm_61")   #later architectures
+
+set(ALL_LIBRARIES "${PROJECT_SOURCE_DIR}/lib/freeglut.lib" "${PROJECT_SOURCE_DIR}/lib/glew64.lib" )
+
+set(CUDA_NVCC_FLAGS_DEBUG ${CUDA_NVCC_FLAGS} -g -G)
+set(CUDA_NVCC_FLAGS_RELEASE ${CUDA_NVCC_FLAGS} -O3)
+	
+# Create and link the executable
+cuda_add_executable(${PROJECT_NAME} ${cu_files} ${cpp_files} ${h_files})
+target_link_libraries(${PROJECT_NAME} ${CUDA_LIBRARIES} ${ALL_LIBRARIES})
+
+# copy dlls
+add_custom_command(
+   TARGET ${PROJECT_NAME} POST_BUILD
+   COMMAND ${CMAKE_COMMAND} -E copy 
+		"${PROJECT_SOURCE_DIR}/bin/win64/$<CONFIGURATION>/freeglut.dll"
+		"${PROJECT_SOURCE_DIR}/bin/win64/$<CONFIGURATION>/freeImage.dll"
+		"${PROJECT_SOURCE_DIR}/bin/win64/$<CONFIGURATION>/glew64.dll"
+        "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
+
+		
