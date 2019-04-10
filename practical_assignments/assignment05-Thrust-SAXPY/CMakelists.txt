@@ -1,0 +1,48 @@
+############################################################################
+# <project> SAXPY					</project>
+# <summary> SAXPY Thrust			</summary>
+# <date>    2019-04-10          	</date>
+# <author>  Alberto Garcia-Garcia 	</author>
+# <email>   agarcia@dtic.ua.es 		</email>
+############################################################################
+
+cmake_minimum_required(VERSION 2.8)
+
+SET( PROJECT_NAME thrust_saxpy )
+project(${PROJECT_NAME})
+
+file(GLOB cpp_files *.cpp)
+file(GLOB h_files common/*.h common/GL/*.h)
+file(GLOB h_files *.h)
+file(GLOB cu_files *.cu)
+
+source_group("Source Files" FILES ${cu_files} ${cpp_files})
+source_group("Header Files" FILES ${h_files})
+
+# Find dependencies
+find_package(CUDA 9.2 REQUIRED)
+
+# Compiler options
+set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS}
+    -use_fast_math
+    -res-usage)
+
+# Include and link directories
+include_directories(
+    common/
+	common/GL/
+)
+	
+# set cuda compatible arquitectures (code generation) sm_20 Fermi, GTX 480 compatible
+#list(APPEND CUDA_NVCC_FLAGS "-gencode=arch=compute_20,code=sm_20")
+#list(APPEND CUDA_NVCC_FLAGS "-gencode=arch=compute_50,code=sm_50")
+list(APPEND CUDA_NVCC_FLAGS "-gencode=arch=compute_61,code=sm_61")   #later architectures
+
+set(CUDA_NVCC_FLAGS_DEBUG ${CUDA_NVCC_FLAGS} -g -G)
+set(CUDA_NVCC_FLAGS_RELEASE ${CUDA_NVCC_FLAGS} -O3)
+
+# Create and link the executable
+cuda_add_executable(${PROJECT_NAME} ${cu_files} ${cpp_files} ${h_files})
+target_link_libraries(${PROJECT_NAME} ${CUDA_LIBRARIES})
+
+	
