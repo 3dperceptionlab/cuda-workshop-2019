@@ -63,13 +63,14 @@ int main(void)
 
     // Vectores de la parte host
     const int N = 1024*1024;
-    float x[N];
-    float y[N];
+    std::vector<float> x(N);
+    std::vector<float> y(N);
    
-   for(int i=0;i<N;i++){
-      x[i]=i;
-      y[i]=5*i;
-   }
+	for(int i=0;i<N;i++)
+	{
+		x[i]=i;
+		y[i]=5*i;
+	}
 
     {
        cudaEventCreate( &start );
